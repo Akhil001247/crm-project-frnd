@@ -10,7 +10,9 @@ export default function Register() {
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${API_URL}/api/auth/register`, form);
+      await axios.post(`${API_URL}/api/auth/register`, form, {
+        withCredentials: true
+      });
       alert('Registration successful! Please log in.');
       navigate('/');
     } catch (error) {
@@ -23,7 +25,7 @@ export default function Register() {
     <div className="min-h-screen flex items-center justify-center bg-white">
       <form onSubmit={handleRegister} className="bg-gray-300 p-6 rounded-lg shadow-lg w-5/6 h-[28rem]">
         <h2 className="text-2xl font-bold mb-4 text-center pt-6">Register Here</h2>
-        
+
         <input
           type="text"
           placeholder="Username"

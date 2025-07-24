@@ -6,18 +6,13 @@ export default function Customers() {
   const [form, setForm] = useState({ name: '', email: '', phone: '' });
   const [editingId, setEditingId] = useState(null);
 
-  const API_URL = import.meta.env.VITE_API_URL?.replace(/\/$/, ''); // remove trailing slash if present
-  const token = localStorage.getItem('token');
-
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
+  const API_URL = import.meta.env.VITE_API_URL?.replace(/\/$/, '');
 
   const fetchCustomers = async () => {
     try {
-      const res = await axios.get(`${API_URL}/api/customers`, config);
+      const res = await axios.get(`${API_URL}/api/customers`, {
+        withCredentials: true,
+      });
       setCustomers(res.data);
     } catch (err) {
       console.error('Error fetching customers:', err);
@@ -29,10 +24,14 @@ export default function Customers() {
     e.preventDefault();
     try {
       if (editingId) {
-        await axios.put(`${API_URL}/api/customers/${editingId}`, form, config);
+        await axios.put(`${API_URL}/api/customers/${editingId}`, form, {
+          withCredentials: true,
+        });
         setEditingId(null);
       } else {
-        await axios.post(`${API_URL}/api/customers`, form, config);
+        await axios.post(`${API_URL}/api/customers`, form, {
+          withCredentials: true,
+        });
       }
       setForm({ name: '', email: '', phone: '' });
       fetchCustomers();
@@ -43,13 +42,19 @@ export default function Customers() {
   };
 
   const handleEdit = (customer) => {
-    setForm({ name: customer.name, email: customer.email, phone: customer.phone });
+    setForm({
+      name: customer.name,
+      email: customer.email,
+      phone: customer.phone,
+    });
     setEditingId(customer._id);
   };
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`${API_URL}/api/customers/${id}`, config);
+      await axios.delete(`${API_URL}/api/customers/${id}`, {
+        withCredentials: true,
+      });
       fetchCustomers();
     } catch (err) {
       console.error('Error deleting customer:', err);
